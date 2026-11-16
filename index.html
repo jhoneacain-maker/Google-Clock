@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Clock</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 12px;
+    overflow: hidden;
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    max-width: 100%;
+  }
+  .left-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  canvas {
+    display: block;
+    width: 126px;
+    height: 126px;
+  }
+  .google-label {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 6px;
+    letter-spacing: 0.3px;
+  }
+  .clock-box {
+    font-size: 18.5px;
+    line-height: 1.45;
+    text-align: left;
+    white-space: nowrap;
+  }
+  @media (min-width: 600px) {
+    .container {
+      gap: 32px;
+    }
+    canvas {
+      width: 180px;
+      height: 180px;
+    }
+    .google-label {
+      font-size: 32px;
+      margin-top: 10px;
+    }
+    .clock-box {
+      font-size: 28px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="left-box">
+    <canvas id="googleLogo" width="360" height="360"></canvas>
+    <div class="google-label">Google</div>
+  </div>
+  <div class="clock-box" id="clockText"></div>
+</div>
+
+<script>
+  function drawGoogleLogo() {
+    const canvas = document.getElementById('googleLogo');
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const cx = size / 2;
+    const cy = size / 2;
+    const r = size * 0.33;
+    const w = r * 0.52;
+    const outerR = r + w / 2;
+
+    ctx.clearRect(0, 0, size, size);
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+    ctx.clip();
+
+    const degToRad = (deg) => (deg * Math.PI) / 180;
+
+    ctx.lineWidth = w;
+    ctx.lineCap = 'butt';
+
+    // Green (Bottom curve)
+    ctx.beginPath();
+    ctx.strokeStyle = '#34A853';
+    ctx.arc(cx, cy, r, degToRad(44), degToRad(137));
+    ctx.stroke();
+
+    // Yellow (Left curve)
+    ctx.beginPath();
+    ctx.strokeStyle = '#FBBC05';
+    ctx.arc(cx, cy, r, degToRad(135), degToRad(224));
+    ctx.stroke();
+
+    // Red (Top curve)
+    ctx.beginPath();
+    ctx.strokeStyle = '#EA4335';
+    ctx.arc(cx, cy, r, degToRad(222), degToRad(315));
+    ctx.stroke();
+
+    // Blue (Lower-right curve)
+    ctx.beginPath();
+    ctx.strokeStyle = '#4285F4';
+    ctx.arc(cx, cy, r, degToRad(358), degToRad(48));
+    ctx.stroke();
+
+    // Blue horizontal crossbar
+    ctx.fillStyle = '#4285F4';
+    ctx.fillRect(cx, cy - w * 0.56, outerR + 4, w);
+
+    ctx.restore();
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const month = months[now.getMonth()];
+    const day = String(now.getDate()).padStart(2, '0');
+    const year = now.getFullYear();
+
+    let hours = now.getHours();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const dateStr = `${month} ${day}, ${year}..`;
+    const timeStr = `Time: ${hours}:${minutes}:${seconds} ${ampm}`;
+
+    document.getElementById('clockText').innerHTML =
+      `${dateStr}<br>${timeStr}<br>Made by Official Google!`;
+  }
+
+  drawGoogleLogo();
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
